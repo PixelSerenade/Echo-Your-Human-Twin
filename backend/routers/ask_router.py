@@ -1162,26 +1162,32 @@ async def ask_twin(req: AskRequest, request: Request, db: AsyncSession = Depends
                             r"\b(?:placement|placed|career goal|my goal is to get a job|my goal is to get a placement)\b",
                             schedule_goal_context,
                         ))
+                        explicit_schedule_goal = bool(re.search(
+                            r"\b(?:save|create|add|track)\b[^.!?]{0,80}\bgoal\b|\bmy goal is\b",
+                            schedule_goal_context,
+                        ))
                         matching_existing_goal = next((
                             goal for goal in bundle.goals
                             if goal.status.casefold() != "completed"
                             and any(token in schedule_goal_context for token in re.findall(r"[a-z0-9]+", goal.title.casefold()) if len(token) > 3)
                         ), None)
                         schedule_goal = None
-                        if bundle.enabled_sources.get("goals", False) and (placement_goal_context or matching_existing_goal):
+                        if bundle.enabled_sources.get("goals", False) and (placement_goal_context or explicit_schedule_goal or matching_existing_goal):
                             try:
                                 async with asyncio.timeout(12.0):
                                     goal_data = await gemini_client.build_goal_details(user_messages, local_today.isoformat())
                             except Exception as exc:
                                 print(f"Could not build goal checklist from schedule plan: {exc}")
                                 goal_data = {}
-                            goal_title = " ".join(str(goal_data.get("title", "")).split())[:200] or (matching_existing_goal.title if matching_existing_goal else "Get a placement")
+                            goal_title = " ".join(str(goal_data.get("title", "")).split())[:200] or (matching_existing_goal.title if matching_existing_goal else ("Get a placement" if placement_goal_context else validated[0]["title"]))
                             raw_goal_steps = goal_data.get("milestones", [])
                             goal_steps = [
                                 {"title": " ".join(str(step.get("title", "")).split())[:120], "completed": False}
                                 for step in raw_goal_steps[:5]
                                 if isinstance(step, dict) and str(step.get("title", "")).strip()
                             ] if isinstance(raw_goal_steps, list) else []
+                            if not goal_steps and explicit_schedule_goal and not placement_goal_context:
+                                goal_steps = [{"title": title[:120], "completed": False} for title in dict.fromkeys(item["title"] for item in validated)][:5]
                             if not goal_steps and placement_goal_context:
                                 goal_steps = [
                                     {"title": "Choose the role you want to target", "completed": False},
