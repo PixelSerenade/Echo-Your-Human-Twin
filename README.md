@@ -1,4 +1,4 @@
-# HumanTwin AI 🧠⚡
+#Echo-Your HumanTwin AI 🧠⚡
 
 ## Persona-aware memory
 
