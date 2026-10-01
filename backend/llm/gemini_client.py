@@ -146,7 +146,7 @@ class GeminiClient:
     async def build_chat_schedule(self, user_messages: list[str], local_today: str, permitted_context: str) -> dict:
         """Build dated study/work blocks only from an explicit user-stated availability window."""
         if not self.api_key:
-            return {"needs_follow_up": True, "question": "What exact hours are you free, and which days should I use?", "blocks": []}
+            return {"needs_follow_up": True, "question": "Planning is unavailable because Echo's AI connection isn't configured. Nothing has been saved yet.", "blocks": []}
         today = datetime.date.fromisoformat(local_today)
         user_text = "\n".join(f"USER: {message[:1000]}" for message in user_messages[-8:])
         prompt = f"""Make a realistic short schedule from this chat. Use only the user's own messages to infer free time.
@@ -184,7 +184,14 @@ Return only JSON: {{"needs_follow_up":false,"question":"","deadline":{{"title":"
             return result
         except Exception as exc:
             print(f"Chat schedule generation unavailable: {exc}")
-            return {"needs_follow_up": True, "question": "What exact hours are you free, and which days should I use?", "blocks": []}
+            message = (
+                "I've got your availability, but the AI service has reached its request limit. "
+                "Your plan hasn't been saved yet. Please try again later."
+                if "429" in str(exc) else
+                "I've got your availability, but I couldn't reach the planning service just now. "
+                "Your plan hasn't been saved yet. Please try again in a moment."
+            )
+            return {"needs_follow_up": True, "question": message, "blocks": []}
 
     async def extract_chat_deadline(self, message: str, local_today: str) -> dict:
         """Extract an explicitly shared upcoming date for a task/reminder."""
@@ -596,6 +603,7 @@ Return JSON only: {{"needs_follow_up":false,"follow_up_question":"","title":"...
                                 retry_text = retry_resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
                                 return json.loads(retry_text)
                     elif resp.status_code in (429, 503):
+                        last_error = f"{model} returned {resp.status_code}"
                         continue
                     else:
                         last_error = f"{model} returned {resp.status_code}: {resp.text[:150]}"
@@ -646,6 +654,7 @@ Return JSON only: {{"needs_follow_up":false,"follow_up_question":"","title":"...
                     if resp.status_code == 200:
                         return resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
                     if resp.status_code in (429, 503):
+                        last_error = f"{model} returned {resp.status_code}"
                         continue
                     last_error = f"{model} returned {resp.status_code}: {resp.text[:150]}"
             except Exception as e:

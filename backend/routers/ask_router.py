@@ -574,7 +574,15 @@ async def ask_twin(req: AskRequest, request: Request, db: AsyncSession = Depends
     ), "")
     reminder_confirmation = affirmative_reply and assistant_offered_reminder and bool(prior_upcoming_message)
     plan_confirmation = affirmative_reply and assistant_offered_exam_plan and bool(prior_upcoming_message)
-    plan_request = is_explicit_plan_request(req.question) or plan_confirmation
+    latest_assistant_message = next((
+        str(turn.get("content", "")) for turn in reversed(req.recent_turns)
+        if str(turn.get("role", "")).lower() == "assistant"
+    ), "")
+    retry_failed_plan = bool(
+        re.search(r"\b(?:try again|retry|yes|go ahead)\b", req.question, re.I)
+        and "I've got your availability, but" in latest_assistant_message
+    )
+    plan_request = is_explicit_plan_request(req.question) or plan_confirmation or retry_failed_plan
     assistant_asked_for_availability = any(
         str(turn.get("role", "")).lower() == "assistant"
         and re.search(r"(?:what (?:exact )?hours are you free|exact hours are you free|what times are you free|when do you focus best|which days should i use|which days should i plan around|what time would you like to finish|what time can you start|would you like me to (?:help you prepare with a timetable|make a preparation timetable)|are those times .*am or pm|did you mean .*\b(?:am|pm)\b)", str(turn.get("content", "")), re.I)
@@ -1235,7 +1243,7 @@ async def ask_twin(req: AskRequest, request: Request, db: AsyncSession = Depends
                         spoken_message = "\n".join(lines)
             except (TimeoutError, ValueError, TypeError) as exc:
                 print(f"Could not build a chat plan safely: {exc}")
-                spoken_message = "I couldn't fit that into a timetable safely yet. What exact hours and days are you free?"
+                spoken_message = "I've got your availability, but I couldn't finish creating the plan just now. Nothing new has been saved. Please try again in a moment."
 
     if reminder_request and deadline_reminder_created and not schedule_setup_request and not date_followup_needed:
         due_item = plan_items_created[0] if plan_items_created else None
