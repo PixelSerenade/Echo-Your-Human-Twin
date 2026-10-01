@@ -1,4 +1,4 @@
-#Echo-Your HumanTwin AI 🧠⚡
+#Echo-Your HumanTwin AI 
 
 ## Persona-aware memory
 
@@ -58,7 +58,7 @@ HumanTwin AI models a person through three internal thinking styles ("twins"):
 
 ---
 
-## 🚀 Quickstart & Setup Guide
+##  Quickstart & Setup Guide
 
 ### 1. Prerequisites
 * **Python 3.10+** (Tested on Python 3.13)
@@ -149,7 +149,7 @@ For a manual frontend start, open another terminal and run `npm install` once an
 
 ---
 
-## 🧪 Running Automated Tests
+##  Running Automated Tests
 
 Run the full end-to-end test suite (18 automated tests covering all 5 development phases):
 
@@ -166,7 +166,7 @@ Tests verify:
 
 ---
 
-## ⏱️ 2-Minute Hackathon Demo Script
+##  2-Minute Hackathon Demo Script
 
 Follow this script for an impactful 2-minute live presentation:
 
@@ -228,7 +228,7 @@ Follow this script for an impactful 2-minute live presentation:
 
 ---
 
-## 🔒 Privacy & Data Sovereignty Guarantees
+## Privacy & Data Sovereignty Guarantees
 
 * **Single Data Access Gateway**: All endpoints query data through `get_permitted_user_data()`.
 * **Zero Leaks**: If a user disables a category (e.g. Study Log), the SQL query does not load it, and Gemini never sees it.
@@ -238,7 +238,7 @@ Follow this script for an impactful 2-minute live presentation:
 
 ---
 
-## 👥 Contributors & Hackathon Prototype License
+##  Contributors & Hackathon Prototype License
 
 Built with ❤️ for the Hackathon by the **HumanTwin AI Team**.
 Licensed under the MIT License.
