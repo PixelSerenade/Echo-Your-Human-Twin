@@ -11,7 +11,8 @@ _PERSONAL_LOOKUP = re.compile(r"\b(?:i told you|i shared|do you know|do i have m
 # Explicit preparation requests start the availability → timetable flow. Merely
 # mentioning a due date is handled as a reminder, not a schedule request.
 _EXPLICIT_PLAN_REQUEST = re.compile(
-    r"\b(?:make|create|build|draft|prepare|put together)\s+(?:me\s+)?(?:a\s+)?plan\b"
+    r"\b(?:make|create|build|draft|prepare|save|put together)\s+(?:me\s+)?(?:an?\s+|the\s+|my\s+)?"
+    r"(?:(?:preparation|study|revision|interview|practice|learning|weekly|daily|workout|training)\s+){0,3}(?:plan|timetable|schedule)\b"
     r"|\b(?:help me|can you|could you|please)\s+(?:to\s+)?plan\b"
     r"|\bplan out\b"
     r"|\bplan me\b"
