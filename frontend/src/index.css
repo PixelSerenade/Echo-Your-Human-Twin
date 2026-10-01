@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-app: #FAF7FF;
+  --surface-card: #FFFFFF;
+  --surface-subtle: #F4EEFF;
+  --text-main: #1B1530;
+  --text-muted: #6B6485;
+  --border-subtle: #ECE6FA;
+  --accent-gradient: linear-gradient(135deg, #7C5CFF 0%, #FF7A9E 100%);
+  --style-rational: #2EC4B6;
+  --style-emotional: #FF8FA3;
+  --style-ambitious-from: #8B5CF6;
+  --style-ambitious-to: #FF9F43;
+}
+
+.dark {
+  --bg-app: #120F1C;
+  --surface-card: #1D1830;
+  --surface-subtle: #26203D;
+  --text-main: #F4F0FF;
+  --text-muted: #A9A1C4;
+  --border-subtle: #2E2747;
+  --accent-gradient: linear-gradient(135deg, #8A6BFF 0%, #FF8BAE 100%);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', 'Sora', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Micro-interaction tactile button press */
+button, .btn-press {
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease, opacity 0.15s ease;
+}
+button:active, .btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 92, 255, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 92, 255, 0.4);
+}
+
+/* Reduced Motion Settings & Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.reduce-motion *, .reduce-motion *::before, .reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Accent gradient utility */
+.bg-brand-gradient {
+  background: linear-gradient(135deg, #7C5CFF 0%, #FF7A9E 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #7C5CFF 0%, #FF7A9E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-ambitious-gradient {
+  background: linear-gradient(135deg, #8B5CF6 0%, #FF9F43 100%);
+}

@@ -1,0 +1,50 @@
+{
+  "IN": {
+    "country": "India",
+    "last_verified": "2026-10-01",
+    "sources": ["https://dghs.mohfw.gov.in/national-mental-health-programme.php", "https://112.gov.in/", "https://www.cybercrime.gov.in/Hindi/Helplinehn.aspx", "https://wcd.gov.in/women/help", "https://wcd.gov.in/child/child-helpline"],
+    "resources": [
+      {"name": "Tele-MANAS", "number": "14416", "hours": "24/7", "languages": "Multiple Indian languages", "type": "mental_health"},
+      {"name": "Emergency services", "number": "112", "hours": "24/7", "languages": "Local services", "type": "emergency"},
+      {"name": "Women’s helpline", "number": "181", "hours": "24/7 (availability can vary by state)", "languages": "Regional", "type": "women"},
+      {"name": "Childline", "number": "1098", "hours": "24/7", "languages": "Regional", "type": "child"},
+      {"name": "National Cyber Crime Helpline", "number": "1930", "hours": "24/7 for financial cyber fraud", "languages": "Regional", "type": "cyber"}
+    ]
+  },
+  "US": {
+    "country": "United States",
+    "last_verified": "2026-10-01",
+    "sources": ["https://988lifeline.org/", "https://www.usa.gov/phone-numbers"],
+    "resources": [
+      {"name": "988 Suicide & Crisis Lifeline", "number": "988", "message_number": "988", "hours": "24/7", "languages": "English and Spanish; interpretation options available", "type": "crisis"},
+      {"name": "Emergency services", "number": "911", "hours": "24/7", "languages": "Local services", "type": "emergency"}
+    ]
+  },
+  "GB": {
+    "country": "United Kingdom",
+    "last_verified": "2026-10-01",
+    "sources": ["https://www.samaritans.org/how-we-can-help/contact-samaritan/", "https://www.gov.uk/guidance/999-and-112-the-uks-national-emergency-numbers"],
+    "resources": [
+      {"name": "Samaritans", "number": "116 123", "hours": "24/7", "languages": "English", "type": "crisis"},
+      {"name": "Emergency services", "number": "999", "hours": "24/7", "languages": "Local services", "type": "emergency"}
+    ]
+  },
+  "IE": {
+    "country": "Ireland",
+    "last_verified": "2026-10-01",
+    "sources": ["https://www.samaritans.org/how-we-can-help/contact-samaritan/", "https://www.gov.ie/en/publication/2c8e1-emergency-numbers/"],
+    "resources": [
+      {"name": "Samaritans", "number": "116 123", "hours": "24/7", "languages": "English", "type": "crisis"},
+      {"name": "Emergency services (112 or 999)", "number": "112", "hours": "24/7", "languages": "Local services", "type": "emergency"}
+    ]
+  },
+  "OTHER": {
+    "country": "Other / location not known",
+    "last_verified": "2026-10-01",
+    "sources": ["https://findahelpline.com/"],
+    "resources": [
+      {"name": "Find help in your country", "number": "", "hours": "Check local availability", "languages": "Many languages", "type": "crisis", "url": "https://findahelpline.com/"}
+    ]
+  },
+  "_release_note": "TODO: re-verify each number, hours, language, and country before every release. Last verified dates identify the review date, not a guarantee of current availability."
+}
