@@ -15,7 +15,7 @@ HumanTwin AI models a person through three internal thinking styles ("twins"):
 
 ---
 
-## 🏗️ System Architecture & Tech Stack
+##  System Architecture & Tech Stack
 
 ```
                      ┌───────────────────────────────────────────────┐
