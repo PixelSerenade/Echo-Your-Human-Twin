@@ -12,7 +12,7 @@ import TwinKnowledgeSection from './components/TwinKnowledgeSection';
 import SettingsSection from './components/SettingsSection';
 import OnboardingModal from './components/OnboardingModal';
 import EvolutionModal from './components/EvolutionModal';
-import { api } from './api';
+import { api, BASE_URL } from './api';
 import { resolveTwinName } from './utils/identity';
 
 function AppContent() {
@@ -112,6 +112,7 @@ function AppContent() {
   };
 
   const handleLoginDemo = async () => {
+    if (!BASE_URL) return;
     try {
       const p = await api.getProfile('demo-alex-rivers');
       const safeTwinName = resolveTwinName(p.twin_name, p.user_name || p.name, p.twin_name_customized);
@@ -401,7 +402,7 @@ function AppContent() {
           <AuthCard
             initialMode={authMode}
             onAuthSuccess={handleAuthSuccess}
-            onDemoLogin={handleLoginDemo}
+            onDemoLogin={BASE_URL ? handleLoginDemo : undefined}
             onBackToHome={() => setShowAuth(false)}
           />
         ) : (
@@ -410,7 +411,7 @@ function AppContent() {
               <LandingPage
                 onSignUp={() => { setAuthMode('signup'); setShowAuth(true); }}
                 onLogIn={() => { setAuthMode('login'); setShowAuth(true); }}
-                onLoginDemo={handleLoginDemo}
+                onLoginDemo={BASE_URL ? handleLoginDemo : undefined}
                 twinStyle={profile?.primary_twin || 'rational'}
               />
             )}

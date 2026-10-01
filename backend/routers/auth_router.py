@@ -17,6 +17,7 @@ from backend.models import User, TwinWeight, Permission
 from backend.schemas import SignUpRequest, LoginRequest, UserSessionResponse, TwinWeightsOut
 from backend.services.identity import resolve_twin_name
 from backend.config import settings
+from backend.services.session_auth import issue_session, read_session, SESSION_SECONDS
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -57,9 +58,11 @@ def clear_failed_attempts(key: str):
 
 def get_current_user_id(request: Request) -> Optional[str]:
     # 1. Cookie
-    user_id = request.cookies.get("session_user_id")
+    user_id = read_session(request.cookies.get("session_user_id"))
     if user_id:
         return user_id
+    if settings.PRODUCTION:
+        return None
     # 2. X-User-Id header
     user_id = request.headers.get("X-User-Id")
     if user_id:
@@ -122,7 +125,9 @@ async def signup(req: SignUpRequest, response: Response, db: AsyncSession = Depe
     # Set httpOnly cookie
     response.set_cookie(
         key="session_user_id",
-        value=new_user_id,
+        value=issue_session(new_user_id),
+        secure=settings.PRODUCTION,
+        max_age=SESSION_SECONDS,
         httponly=True,
         samesite="lax",
         path="/"
@@ -160,7 +165,7 @@ async def login(req: LoginRequest, request: Request, response: Response, db: Asy
     # Check credentials with generic error to prevent user enumeration
     if not user or not user.password_hash or not verify_password(req.password, user.password_hash):
         # Demo account fallback for convenience
-        if user and user.id == "demo-alex-rivers" and (req.password == "alex123" or req.password == "demo1234"):
+        if not settings.PRODUCTION and user and user.id == "demo-alex-rivers" and (req.password == "alex123" or req.password == "demo1234"):
             clear_failed_attempts(rate_key)
         else:
             record_failed_attempt(rate_key)
@@ -171,7 +176,9 @@ async def login(req: LoginRequest, request: Request, response: Response, db: Asy
     # Set httpOnly cookie
     response.set_cookie(
         key="session_user_id",
-        value=user.id,
+        value=issue_session(user.id),
+        secure=settings.PRODUCTION,
+        max_age=SESSION_SECONDS,
         httponly=True,
         samesite="lax",
         path="/"

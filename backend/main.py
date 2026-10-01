@@ -1,6 +1,7 @@
 import os
 import asyncio
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -15,9 +16,12 @@ from backend.routers import (
 )
 from backend.routers import push_router
 from backend.services.push_notifications import reminder_scheduler
+from backend.services.session_auth import require_production_session
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    if settings.PRODUCTION and len(settings.SESSION_SECRET) < 32:
+        raise RuntimeError("Production requires a SESSION_SECRET of at least 32 characters")
     # Ensure tables and legacy identity columns exist before ORM queries run.
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -72,7 +76,8 @@ app = FastAPI(
     title="HumanTwin AI API",
     description="Intelligent Digital Twin Hackathon Prototype",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    dependencies=[Depends(require_production_session)],
 )
 
 # CORS configuration supporting cookies
@@ -113,7 +118,6 @@ app.include_router(debate_router.router)
 app.include_router(attachment_router.router)
 app.include_router(push_router.router)
 
-@app.get("/")
 @app.get("/health")
 async def health_check():
     return {
@@ -122,6 +126,13 @@ async def health_check():
         "demo_mode": settings.DEMO_MODE,
         "database": "connected"
     }
+
+# API routes are registered first. Serve the built UI from the same HTTPS
+# origin so session cookies and browser push work without cross-site setup.
+if settings.STATIC_DIR:
+    app.mount("/", StaticFiles(directory=settings.STATIC_DIR, html=True), name="frontend")
+else:
+    app.add_api_route("/", health_check, methods=["GET"])
 
 if __name__ == "__main__":
     import uvicorn

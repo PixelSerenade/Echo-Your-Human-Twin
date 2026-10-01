@@ -3,6 +3,8 @@ from sqlalchemy.orm import declarative_base
 from backend.config import settings
 
 db_url = settings.DATABASE_URL
+if db_url.startswith(("postgres://", "postgresql://")):
+    db_url = "postgresql+asyncpg://" + db_url.split("://", 1)[1]
 if not db_url.startswith("postgresql+asyncpg://"):
     raise RuntimeError(
         "DATABASE_URL must use PostgreSQL with the asyncpg driver "

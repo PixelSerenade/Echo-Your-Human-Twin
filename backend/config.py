@@ -6,6 +6,9 @@ ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
 load_dotenv(ENV_PATH)
 
 class Settings(BaseSettings):
+    PRODUCTION: bool = False
+    SESSION_SECRET: str = ""
+    STATIC_DIR: str = ""
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     DATABASE_URL: str = os.getenv("DATABASE_URL", "")
     HOST: str = os.getenv("HOST", "0.0.0.0")

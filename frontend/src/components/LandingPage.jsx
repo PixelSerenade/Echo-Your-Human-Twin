@@ -57,14 +57,14 @@ export default function LandingPage({
         </div>
 
         {/* Subtle Demo Option */}
-        <div className="pt-1">
+        {onLoginDemo && <div className="pt-1">
           <button
             onClick={onLoginDemo}
             className="text-xs font-medium text-content-mutedLight dark:text-content-mutedDark hover:text-brand-purple dark:hover:text-[#A894FF] underline transition"
           >
             Or explore directly as Alex (Demo Persona)
           </button>
-        </div>
+        </div>}
       </div>
 
       {/* 3 Benefit Cards */}

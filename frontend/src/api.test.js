@@ -5,6 +5,9 @@ globalThis.window = { location: { hostname: 'localhost' } };
 try {
   const { BASE_URL } = await import('./api.js?localhost-check');
   assert.equal(BASE_URL, 'http://localhost:8003');
+  globalThis.window.location.hostname = 'echo.up.railway.app';
+  const hosted = await import('./api.js?hosted-check');
+  assert.equal(hosted.BASE_URL, '');
 } finally {
   delete globalThis.window;
 }

@@ -1,8 +1,8 @@
 // Keep the API on the same local hostname as the page so SameSite session
 // cookies work whether someone opens localhost or 127.0.0.1.
 const pageHost = typeof window === 'undefined' ? '127.0.0.1' : window.location.hostname;
-const localHost = pageHost === 'localhost' || pageHost === '127.0.0.1' ? pageHost : '127.0.0.1';
-export const BASE_URL = `http://${localHost}:8003`;
+const isLocal = pageHost === 'localhost' || pageHost === '127.0.0.1';
+export const BASE_URL = isLocal ? `http://${pageHost}:8003` : '';
 
 export async function apiRequest(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
@@ -129,13 +129,13 @@ export const api = {
     apiRequest('/feedback', { method: 'POST', body: JSON.stringify(data) }),
 
   getLearnedPreferences: (userId = 'demo-alex-rivers') =>
-    apiRequest(`/preferences/learned?user_id=${encodeURIComponent(userId)}`),
+    apiRequest(`/api/preferences/learned?user_id=${encodeURIComponent(userId)}`),
 
   forgetLearnedPreference: (key, userId = 'demo-alex-rivers') =>
-    apiRequest(`/preferences/learned/${encodeURIComponent(key)}?user_id=${encodeURIComponent(userId)}`, { method: 'DELETE' }),
+    apiRequest(`/api/preferences/learned/${encodeURIComponent(key)}?user_id=${encodeURIComponent(userId)}`, { method: 'DELETE' }),
 
   resetLearnedPreferences: (userId = 'demo-alex-rivers') =>
-    apiRequest(`/preferences/learned?user_id=${encodeURIComponent(userId)}`, { method: 'DELETE' }),
+    apiRequest(`/api/preferences/learned?user_id=${encodeURIComponent(userId)}`, { method: 'DELETE' }),
 
   getTwinKnowledge: (userId = 'demo-alex-rivers') =>
     apiRequest(`/twin-knowledge?user_id=${userId}`),

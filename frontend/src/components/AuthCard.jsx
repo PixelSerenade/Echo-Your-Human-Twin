@@ -229,13 +229,13 @@ export default function AuthCard({ onAuthSuccess, onDemoLogin, onBackToHome, ini
         </form>
 
         <div className="pt-2 border-t border-stroke-light dark:border-stroke-dark flex flex-col items-center space-y-3 text-xs text-content-mutedLight dark:text-content-mutedDark">
-          <button
+          {onDemoLogin && <button
             type="button"
             onClick={onDemoLogin}
             className="hover:underline font-semibold text-brand-purple dark:text-[#A894FF]"
           >
             Or explore directly as Alex (Demo Persona)
-          </button>
+          </button>}
           {onBackToHome && (
             <button
               type="button"
