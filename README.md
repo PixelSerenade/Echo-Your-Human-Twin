@@ -1,4 +1,6 @@
-#Echo-Your HumanTwin AI 
+# Echo-Your HumanTwin AI
+
+> **Project status: In progress.** Echo is actively being developed and deployed; features and behavior may continue to change.
 
 ## Persona-aware memory
 
