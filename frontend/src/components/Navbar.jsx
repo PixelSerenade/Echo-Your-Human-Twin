@@ -2,7 +2,7 @@ import React from 'react';
 import EchoOrb from './EchoOrb';
 import {
   MessageSquare, Sliders, ShieldCheck, Database,
-  Settings, Sun, Moon, Sparkles, Zap, Brain, Heart, Rocket, LogOut
+  Settings, Sun, Moon, Sparkles, Zap, Brain, Heart, Rocket, LogOut, UserCheck
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import NotificationBell from './NotificationBell';
@@ -31,6 +31,7 @@ export default function Navbar({
   const navItems = [
     { id: 'chat', label: 'Chat', icon: MessageSquare },
     { id: 'plan', label: 'My Plan', icon: Sliders },
+    { id: 'proxy', label: 'Twin Proxy', icon: UserCheck },
     { id: 'privacy', label: 'Privacy', icon: ShieldCheck },
     { id: 'twin', label: 'My Twin', icon: Database },
     { id: 'settings', label: 'Settings', icon: Settings }

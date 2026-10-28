@@ -12,7 +12,7 @@ from backend.database import engine, Base
 from backend.routers import (
     profile_router, permissions_router, ask_router, audit_router,
     simulate_router, feedback_router, knowledge_router, debate_router,
-    auth_router, attachment_router
+    auth_router, attachment_router, proxy_router
 )
 from backend.routers import push_router
 from backend.services.push_notifications import reminder_scheduler
@@ -117,6 +117,7 @@ app.include_router(knowledge_router.router)
 app.include_router(debate_router.router)
 app.include_router(attachment_router.router)
 app.include_router(push_router.router)
+app.include_router(proxy_router.router)
 
 @app.get("/health")
 async def health_check():

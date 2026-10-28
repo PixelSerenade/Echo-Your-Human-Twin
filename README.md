@@ -49,19 +49,23 @@ HumanTwin AI models a person through three internal thinking styles ("twins"):
 
 * **Frontend**: React 19, Vite, Tailwind CSS, Recharts, Lucide Icons (in `/frontend`).
 * **Backend**: FastAPI (Python async), SQLAlchemy 2.0, and PostgreSQL through `asyncpg` (in `/backend`).
-* **Machine Learning**: `scikit-learn` trained on 500+ student task history rows:
+* **Machine Learning**: `scikit-learn` trained on student task history rows:
   * `RandomForestClassifier` for on-time completion probability (94.55% test accuracy).
   * `RandomForestRegressor` for actual hours required (1.23h MAE, $R^2 = 0.9813$).
   * Exposes `feature_importances_` to explain "The Why" in the UI.
-* **LLM Engine**: Google Gemini API (`gemini-3.8-flash` / `gemini-3.1-flash-lite`) called **exclusively from the backend**. Strict JSON schema parsing, 1 automated retry on malformed outputs, and a persistent local fallback cache (`backend/data/demo_cache.json`).
-* **Privacy Enforcement**: ONE central data gateway function (`get_permitted_user_data`). Any disabled source is never queried from storage and never injected into LLM context, with complete audit logging on every read.
+* **LLM Engine & Intent Pipeline**: Google Gemini API (`gemini-3.8-flash` / `gemini-3.1-flash-lite`) called **exclusively from the backend**. Strict JSON schema parsing, intent classification (`message_intent`, `intent`), world fact lookup, 1 automated retry, and a persistent local fallback cache (`backend/data/demo_cache.json`).
+* **Safety & Guardrails**: Integrated safety router (`safety.py`) providing non-diagnostic health guidance, crisis support routing, and content moderation prior to LLM processing.
+* **Attachment Engine**: Document & text file extraction (`attachment_extractor.py`) supporting up to 5MB attachments with single-file UI enforcement.
+* **Privacy Enforcement**: ONE central data gateway function (`get_permitted_user_data`). Any disabled source is never queried from storage and never injected into LLM context, with complete audit logging on every read (`audit_log`).
+* **Web Push Notifications**: Automated 3-day and 1-day deadline reminders via Web Push (VAPID keys + service worker `sw.js`).
+* **Autonomous Twin Proxy & Negotiator**: Autonomous meeting/task negotiation engine (`calendar_proxy.py`, `proxy_router.py`) that evaluates incoming requests against protected deep work focus blocks, timetable overlaps, and ML deadline collision risk to craft persona-aware counter-proposals.
 
 ---
 
 ##  Quickstart & Setup Guide
 
 ### 1. Prerequisites
-* **Python 3.10+** (Tested on Python 3.13)
+* **Python 3.10+** (Tested on Python 3.14)
 * **Node.js 18+** & npm
 * **PostgreSQL 15+** with a running server and a database role that can create tables.
 
@@ -129,6 +133,9 @@ The generated private key is ignored by Git. Back it up securely and preserve th
 # Seed the synthetic student persona (Alex Rivers) with 5 weeks of history
 python -m backend.scripts.generate_data
 
+# Seed optional working professional and freelancer personas
+python -m backend.scripts.seed_persona_demos
+
 # Train the on-time classifier and hours regressor models
 python -m backend.ml.train
 ```
@@ -151,18 +158,23 @@ For a manual frontend start, open another terminal and run `npm install` once an
 
 ##  Running Automated Tests
 
-Run the full end-to-end test suite (18 automated tests covering all 5 development phases):
+Run the full end-to-end test suite (**187 automated unit and integration tests** across 20 test modules):
 
 ```bash
 # From the project root with the venv active:
 pytest backend/tests/ -v
+
+# Or using the virtualenv executable directly on Windows:
+.\backend\.venv\Scripts\pytest.exe backend/tests/ -v
 ```
 
 Tests verify:
-1. **Phase 1**: Database schema initialization, synthetic persona seeding, single-gateway permission enforcement.
-2. **Phase 2**: Honest ML model metrics, `/ask` response structure, strict privacy leak prevention (proving disabled data sources never reach Gemini context), and deadline risk flagging even for non-rational twins.
-3. **Phase 3**: Simulator value clamping (0-100), non-linear diminishing returns, simulation correction persistence, mathematical weight renormalization, and the 3-consecutive 10-point lead primary switch rule.
-4. **Phase 5**: Parallel `/debate` generation (`asyncio.gather`), council synthesis without single commands, and offline cache resilience.
+1. **Phase 1 & Onboarding**: Database schema initialization, persona presets (`student`, `working_professional`, `freelancer`), custom twin naming, and single-gateway permission enforcement.
+2. **Phase 2 & ML Risk**: Honest ML model metrics, `/ask` response structure, intent classification (`message_intent`), world lookup routing, safety guardrails (`safety.py`), and strict privacy leak prevention.
+3. **Phase 3 & Simulator**: Simulator value clamping (0-100), non-linear diminishing returns, user correction persistence ("Teach Your Twin"), weight renormalization, and the 3-consecutive 10-point lead primary switch rule.
+4. **Phase 5 & Council Debate**: Parallel `/debate` generation (`asyncio.gather`), step-by-step twin reveals, council synthesis without single commands, and offline cache resilience.
+5. **Attachments & Web Push**: Attachment upload limits (5MB, 1 attachment per request), text/document extraction, VAPID key generation, and background push notification delivery.
+6. **Twin Proxy & Focus Blocks**: Protected deep work focus block collision detection, ML workload risk checks, persona-aligned negotiation text generation, and automated timetable entry creation upon approval.
 
 ---
 

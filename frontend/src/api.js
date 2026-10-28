@@ -205,5 +205,27 @@ export const api = {
     apiRequest('/api/onboarding/step', { method: 'POST', body: JSON.stringify(data) }),
 
   getOnboardingState: () =>
-    apiRequest('/api/onboarding/state')
+    apiRequest('/api/onboarding/state'),
+
+  // Twin Proxy Negotiations & Focus Blocks
+  evaluateProxyNegotiation: (data) =>
+    apiRequest('/api/proxy/negotiate', { method: 'POST', body: JSON.stringify(data) }),
+
+  listProxyNegotiations: (userId = 'demo-user-alex') =>
+    apiRequest(`/api/proxy/negotiations?user_id=${encodeURIComponent(userId)}`),
+
+  actionProxyNegotiation: (id, action, userId = 'demo-user-alex') =>
+    apiRequest(`/api/proxy/negotiations/${id}/action`, {
+      method: 'POST',
+      body: JSON.stringify({ action, user_id: userId })
+    }),
+
+  listFocusBlocks: (userId = 'demo-user-alex') =>
+    apiRequest(`/api/proxy/focus-blocks?user_id=${encodeURIComponent(userId)}`),
+
+  createFocusBlock: (data) =>
+    apiRequest('/api/proxy/focus-blocks', { method: 'POST', body: JSON.stringify(data) }),
+
+  deleteFocusBlock: (id, userId = 'demo-user-alex') =>
+    apiRequest(`/api/proxy/focus-blocks/${id}?user_id=${encodeURIComponent(userId)}`, { method: 'DELETE' })
 };

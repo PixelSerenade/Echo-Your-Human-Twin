@@ -322,3 +322,39 @@ class PushReminderDelivery(Base):
     sent_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
 
     user = relationship("User")
+
+
+class FocusBlock(Base):
+    __tablename__ = "focus_blocks"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    title = Column(String(150), nullable=False)
+    day_of_week = Column(String(20), nullable=False)  # 'Monday' - 'Sunday'
+    start_time = Column(String(10), nullable=False)   # 'HH:MM'
+    end_time = Column(String(10), nullable=False)     # 'HH:MM'
+    is_protected = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
+
+    user = relationship("User")
+
+
+class CalendarNegotiation(Base):
+    __tablename__ = "calendar_negotiations"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    title = Column(String(200), nullable=False)
+    requested_by = Column(String(100), nullable=False)
+    duration_minutes = Column(Integer, nullable=False, default=60)
+    proposed_start_time = Column(DateTime, nullable=False)
+    priority = Column(String(20), nullable=False, default="medium")  # 'low', 'medium', 'high', 'critical'
+    status = Column(String(30), nullable=False, default="pending")  # 'pending', 'accepted', 'countered', 'declined'
+    conflict_detected = Column(Boolean, nullable=False, default=False)
+    conflict_reason = Column(Text, nullable=True)
+    suggested_counter_time = Column(DateTime, nullable=True)
+    negotiation_message = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
+
+    user = relationship("User")
+

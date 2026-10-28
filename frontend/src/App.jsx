@@ -10,6 +10,7 @@ import MyPlanSection from './components/MyPlanSection';
 import PrivacySection from './components/PrivacySection';
 import TwinKnowledgeSection from './components/TwinKnowledgeSection';
 import SettingsSection from './components/SettingsSection';
+import ProxyNegotiatorSection from './components/ProxyNegotiatorSection';
 import OnboardingModal from './components/OnboardingModal';
 import EvolutionModal from './components/EvolutionModal';
 import { api, BASE_URL } from './api';
@@ -442,6 +443,16 @@ function AppContent() {
                 onUpdatePlan={handleUpdateActivePlan}
                 onAskEcho={handleAskFromPlan}
               /> : <MyPlanSection key={profile?.user_id || currentUser?.user_id || 'demo-alex-rivers'} api={api} profile={profile} userId={profile?.user_id || currentUser?.user_id || 'demo-alex-rivers'} onAskEcho={handleAskFromPlan} />
+            )}
+
+            {activePage === 'proxy' && (
+              <ProxyNegotiatorSection
+                key={profile?.user_id || currentUser?.user_id || 'demo-user-alex'}
+                api={api}
+                userId={profile?.user_id || currentUser?.user_id || 'demo-user-alex'}
+                twinName={twinName}
+                primaryTwin={profile?.primary_twin || 'rational'}
+              />
             )}
 
             {activePage === 'privacy' && (
